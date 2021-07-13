@@ -18,8 +18,8 @@ void hello_fromCPU()
 int main(void)
 {
     hello_fromGPU<<<4, 3>>>(0);
-    // hello_fromGPU<<<4, 3>>>(1);
-    cudaDeviceSynchronize();
+    hello_fromGPU<<<4, 3>>>(1);
+    // cudaDeviceSynchronize();
     hello_fromCPU();
     return 0;
 }
