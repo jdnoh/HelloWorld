@@ -1,3 +1,4 @@
+#include <random>
 #include <cuda.h>
 #include <stdio.h>
 #include <curand.h>
@@ -12,7 +13,10 @@ int main()
     // curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_MT19937); 
 
     // initialize the PRNG with seed
-    int seed = time(0);
+    // std::random_device rd;
+    // unsigned int seed = rd();
+    unsigned int seed = time(0);
+    printf("seed = %u\n", seed);
     curandSetPseudoRandomGeneratorSeed(gen, seed);
 
     float *hostData, *devData;
@@ -23,19 +27,12 @@ int main()
     cudaMalloc(&devData, memSize);
 
     // generate n random numbers in (0,1] on the device array 
-    for(int i=0; i<10; i++) 
-        curandGenerateUniform(gen, devData, n);
+    curandGenerateUniform(gen, devData, n);
 
     cudaMemcpy(hostData, devData, memSize, cudaMemcpyDeviceToHost);
 
-    // find the minimum/maximum random number
-    float rmax = 0.0, rmin = 1.0;
-    for(int i=0; i<n; i++) {
-        if(hostData[i]>rmax) rmax = hostData[i] ;
-        if(hostData[i]<rmin) rmin = hostData[i] ;
-    }
-    
-    printf("miminum = %e, maximum = %e\n", rmin, rmax) ;
+    for(int i=0; i<10; i++) printf("%d %e\n", i, hostData[i]);
+
     curandDestroyGenerator(gen);
     cudaFree(devData); free(hostData);
 }
