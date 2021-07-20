@@ -11,12 +11,19 @@ int main(void)
     int *x, *d_x, nT=32;
     size_t memSize = sizeof(int)*dNum;
 
+    // memory allocation in the host and initialization
     x = (int *)malloc(memSize);
     for(int i=0; i<dNum; i++) x[i] = i;
 
+    // memory allocation in the device
     cudaMalloc(&d_x, memSize);
+    // copy from host to device
     cudaMemcpy(d_x, x, memSize, cudaMemcpyHostToDevice);
+
+    // kernel
     add_constant<<<dNum/nT, nT>>>(dNum, d_x);
+
+    // copy from device to host
     cudaMemcpy(x, d_x, memSize, cudaMemcpyDeviceToHost);
 
     for(int i=0; i<dNum; i++) if(x[i]!=2*i) printf("Error\n");

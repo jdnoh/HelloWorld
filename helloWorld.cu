@@ -13,6 +13,7 @@ int main()
 {
     hello_fromGPU<<<2,3>>>(0);
     // hello_fromGPU<<<2,3>>>(1);
+    // cudaDeviceSynchronize();
     hello_fromCPU();
     return 0;
 }
