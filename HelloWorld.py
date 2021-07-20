@@ -9,5 +9,6 @@ def hello_fromCPU():
     print("Hello World from CPU\n")
 
 hello_fromGPU[2,3](0)
+#hello_fromGPU[2,3](1)
 #cuda.synchronize()
 hello_fromCPU()
