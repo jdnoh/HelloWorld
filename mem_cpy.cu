@@ -2,7 +2,7 @@
 __global__ void add_constant(int n, int *x)
 {
     int tid = threadIdx.x + blockIdx.x*blockDim.x;
-    x[tid] *= 2;
+    x[tid] += n;
 }
 
 int main(void)
@@ -20,12 +20,13 @@ int main(void)
     // copy from host to device
     cudaMemcpy(d_x, x, memSize, cudaMemcpyHostToDevice);
 
-    // kernel
-    add_constant<<<dNum/nT, nT>>>(dNum, d_x);
+    // kernel launch
+    add_constant<<<dNum/nT, nT>>>(1, d_x);
 
+    printf("%d\n",x[0]);
     // copy from device to host
     cudaMemcpy(x, d_x, memSize, cudaMemcpyDeviceToHost);
+    printf("%d\n",x[0]);
 
-    for(int i=0; i<dNum; i++) if(x[i]!=2*i) printf("Error\n");
     return 0;
 } 
